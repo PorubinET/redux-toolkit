@@ -4,20 +4,20 @@ import { taskDeleteAll, filterUpdate } from "../../redux/actions"
 import './footer.css'
 
 function Footer() {
-    const tasks = useSelector(state => {
-        const { itemsReducer } = state;
-        return itemsReducer.tasks;
-    })
+    // const tasks = useSelector(state => {
+    //     const { itemsReducer } = state;
+    //     return itemsReducer.tasks;
+    // })
 
-    const filter = useSelector(state => {
-        const { itemsReducer } = state;
-        return itemsReducer.filter;
-    })
+    // const filter = useSelector(state => {
+    //     const { itemsReducer } = state;
+    //     return itemsReducer.filter;
+    // })
 
     const dispatch = useDispatch();
 
-    const falseItems = tasks.filter(item => !item.done).length
-    const trueItems = tasks.filter(item => item.done).length
+    // const falseItems = tasks.filter(item => !item.done).length
+    // const trueItems = tasks.filter(item => item.done).length
 
     const buttonsData = [
         { name: 'all', label: 'All' },
@@ -26,8 +26,10 @@ function Footer() {
     ]
 
     const buttons = buttonsData.map(({ name, label }) => {
-        const active = filter === name;
-        let clazz = active ? "to-do__btn-active" : "to-do__board-btn";
+        // const active = filter === name;
+        // let clazz = active ? "to-do__btn-active" : "to-do__board-btn";
+        let clazz = true ? "to-do__btn-active" : "to-do__board-btn";
+
 
         const filterBtn = (name) => {
             try {
@@ -59,22 +61,24 @@ function Footer() {
         }
     }
 
-
-    if (tasks.length) {
-        const checkS = falseItems > 1 ? "s" : "";
-        const classBtn = trueItems ? "to-do__board-btn-clear to-do__board-btn-active" : "to-do__board-btn-clear";
+    // tasks.length
+    if (true) {
+        // const checkS = falseItems > 1 ? "s" : "";
+        // const classBtn = trueItems ? "to-do__board-btn-clear to-do__board-btn-active" : "to-do__board-btn-clear";
 
         return (
             <div className="to-do__board">
                 <p className="to-do__board-list-items">
-                    {falseItems} item{checkS}
+                    {/* {falseItems} item{checkS} */}
                 </p>
                 <ul className="to-do__board-check">
                     <li className="to-do__board-li">
                         {buttons}
                     </li>
                 </ul>
-                <div className={classBtn}>
+                <div
+                //  className={classBtn}
+                 >
                     <button
                         className="to-do__board-list-btn"
                         onClick={deleteAll}

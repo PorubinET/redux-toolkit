@@ -8,7 +8,7 @@ import {inputLoad} from './store/todoSlice'
 
 
 
-// import Footer from "./components/footer/footer";
+import Footer from "./components/footer/footer";
 // import DateFnsUtils from '@date-io/date-fns';
 // import LuxonUtils from '@date-io/luxon';
 import "./App.css";
@@ -27,7 +27,7 @@ function App() {
             <h1 className="to-do__title">todos</h1>
             <div className="to-do__block">
               <TaskInput />
-              {/* <Footer /> */}
+              <Footer />
             </div>
           </div>
         </div>
