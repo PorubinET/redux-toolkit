@@ -1,6 +1,6 @@
 import { useState } from "react";
 import DateMomentUtils from '@date-io/moment';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch} from "react-redux";
 
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 // import { Popover, TextField, Modal, Box, Typography, Button } from "@material-ui/core";
@@ -12,7 +12,6 @@ import './taskItem.css';
 
 function TaskItem(props) {
     const { _id, desc, done, text, date } = props
-    const todos = useSelector(state => state.todos.todos)
 
     const dispatch = useDispatch();
     let [mode, setMode] = useState(false);
@@ -137,7 +136,6 @@ function TaskItem(props) {
     }
 
     const onCalendarChange = (e) => {
-        // console.log(e)
         setdateChange(e._d)
         dispatch(updateDate({time: e._d, id: _id}))
     }
