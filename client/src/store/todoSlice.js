@@ -1,17 +1,29 @@
-
 import {
     getTasks,
+    addTask,
+    updateTasks,
+    updateTask,
+    updateCheck,
+    deleteTask,
+    deleteTaskAll
 } from "../../src/services/taskServices";
 
 
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
-// First, create the thunk
-export const taskLoad = createAsyncThunk('todos/load',
-    async function() {
-        const response = await getTasks()
-        const data = response.data
-        return data
+// Получаю payload
+export const taskLoad = createAsyncThunk(
+    'todos/load',
+    async function () {
+        try {
+            const response = await getTasks()
+            const data = await response.data;
+            console.log(data)
+            return data
+        } catch (error) {
+            console.log(error)
+        }
+
     }
 )
 
@@ -19,91 +31,75 @@ export const taskLoad = createAsyncThunk('todos/load',
 export const todoSlice = createSlice({
     name: 'todos',
     initialState: {
-        todos: []
+        todos: [],
+        filter: 'all'
     },
-    extraReducers: (builder) => {
-        builder.addCase(taskLoad.fulfilled, (state, action) => {
-            state.todos.push(...action.payload)
-        })
+    extraReducers: {
+        [taskLoad.fulfilled]: (state, action) => {
+            state.todos = action.payload;
+        },
     },
+    reducers: {
+        createTask(state, action) {
+            state.todos.push(action.payload)
+        },   
+        inputDelete(state, action) {
+            deleteTask(action.payload);
+            state.todos = [...state.todos].filter(todo => todo._id !== action.payload) 
+        },
+        updateText(state, action) {
+            updateTask(action.payload._id, {text: action.payload.input})
+            console.log(action.payload)
+            state.todos = state.todos.map(todo => ({ ...todo, text: todo._id === action.payload._id ? action.payload.input: todo.text}))
+        },
+
+
+
+
+        updateChecker(state, action) {
+            updateCheck(action.payload._id, !action.payload.done)
+
+            state.todos = state.todos.map(todo => ({ ...todo, done: todo._id !== action.payload._id ? todo.done : !todo.done }))  
+        },
+        completedAll(state, action) {
+            console.log(action.payload, "action.payload.done")
+            if(action.payload){
+                updateTasks({done: false});
+            }
+            else{
+                updateTasks({done: true})
+            }
+            state.todos.every(todo => todo.done) ? state.todos.map(todo => todo.done = !todo.done) : state.todos.map(todo => todo.done = true)
+        },
+        deleteAll(state, action){
+            deleteTaskAll()
+            state.todos = [...state.todos].filter(todo => !todo.done) 
+        },
+        updateFilter(state, action) {
+            state.filter = action.payload
+        },
+        updateDate(state, action) {
+            console.log(action.payload.id)
+            updateTask(action.payload.id, {date: action.payload.time})
+        },
+        updateDesc(state, action) {
+            updateTask(action.payload._id, {desc: action.payload.input})
+        }
+    }
 })
 
 
-export default todoSlice.reducer
+export const {
+    createTask,
+    updateChecker,
+    updateFilter,
+    updateText,
+    inputDelete,
+    completedAll,
+    deleteAll,
+    updateDate,
+    updateDesc
+} = todoSlice.actions
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// // import {
-// //     LOAD_TASK,
-// //     CREATE_TASK,
-// //     FILTER_TASK,
-// //     UPDATE_TEXT,
-// //     UPDATE_DESC,
-// //     DELETE_TASK,
-// //     DELETE_TASK_ALL,
-// //     COMPLETED_ALL_TASK,
-// //     UPDATE_CHECK_TASK
-// // } from "../redux/types";
-
-// import {
-//     getTasks,
-//     // updateTasks,
-//     // updateTask,
-//     // updateCheck,
-//     // deleteTask,
-//     // deleteTaskAll
-// } from "../../src/services/taskServices";
-// import { createSlice } from '@reduxjs/toolkit'
-
-
-
-// export const todoSlice = createSlice({
-//     name: 'todos',
-//     initialState: {
-//         todos: [],
-//     },
-
-//     reducers: {
-//         taskLoad: (state, action) => {
-//             state.todos.push(action.payload)
-//         },
-//     },
-// })
-
-// export const getTodoAsync = (todos) => async (dispatch) => {
-//     try {
-//       const response = taskLoad({todos});
-//       dispatch(taskLoad('asdsad'));
-//     } catch (err) {
-//       throw new Error(err);
-//     }
-//   };
-
-
-// export const { taskLoad } = todoSlice.actions;
-// export default todoSlice.reducer
+export default todoSlice.reducer;

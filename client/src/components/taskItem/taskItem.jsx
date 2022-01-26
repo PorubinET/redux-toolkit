@@ -1,18 +1,19 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { inputDelete, updateText, updateDesc, updateDate, checkUpdate } from "../../redux/actions";
-
 import DateMomentUtils from '@date-io/moment';
+import { useDispatch, useSelector } from "react-redux";
+
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import { Popover, TextField, Modal, Box, Typography, Button } from "@material-ui/core";
+// import { Popover, TextField, Modal, Box, Typography, Button } from "@material-ui/core";
 
-
+import { inputDelete, updateText, updateChecker, updateDate, updateDesc} from "../../store/todoSlice"
 
 import './taskItem.css';
 
 
 function TaskItem(props) {
     const { _id, desc, done, text, date } = props
+    const todos = useSelector(state => state.todos.todos)
+
     const dispatch = useDispatch();
     let [mode, setMode] = useState(false);
     let [btn, setBtn] = useState(false);
@@ -21,14 +22,14 @@ function TaskItem(props) {
     const [selectedDate, setdateChange] = useState(date);
 
     const [input, setInput] = useState(" ")
+
     const handleDelete = async (e) => {
         e.preventDefault();
+        console.log(_id, "id")
         dispatch(inputDelete(_id))
     };
 
     const handleInput = (e) => { setInput(e.target.value = e.target.value.replace(/ +/g, ' ')) }
-
-    console.log(input)
 
 
     // обновление чека и отправка на сервер
@@ -36,13 +37,14 @@ function TaskItem(props) {
     const handleCheck = (e) => {
         e.preventDefault();
         try {
-            dispatch(checkUpdate(_id, !done));
+            dispatch(updateChecker({_id, done}));
         } catch (error) {
             console.log(error);
         }
     }
 
     // взаимодействие с css
+
     const removeAttribute = (e) => {
         e.currentTarget.removeAttribute("readonly", "true")
     }
@@ -57,10 +59,10 @@ function TaskItem(props) {
         e.currentTarget.classList.add("to-do__text-active")
     }
 
-    // const addPopap = (e) => {
-    //     e.preventDefault();
-    //     setBtn(!btn)
-    // }
+    const addPopap = (e) => {
+        e.preventDefault();
+        setBtn(!btn)
+    }
 
     const handleKeyDown = (e) => {
         if (e.keyCode === 13) {
@@ -77,7 +79,6 @@ function TaskItem(props) {
 
     const handleUpdateInput = async (e) => {
         e.preventDefault();
-        console.log('text')
         if (!input || input === " ") {
             setInput(e.target.value = props.text);
         }
@@ -87,36 +88,35 @@ function TaskItem(props) {
             } catch (error) {
                 console.log(error);
             }
-            dispatch(updateText(input, _id, done))
+            dispatch(updateText({input, _id, done}))
         }
     };
-
 
     //Description//
 
 
-    // const handleUpdateDesc = async (e) => {
-    //     e.preventDefault();
-    //     console.log('text')
-    //     if (!input || input === " ") {
-    //         setInput(e.target.value = props.desc);
-    //     }
-    //     else {
-    //         try {
-    //             setInput(desc);
-    //             let el = document.getElementsByClassName("to-do__description");
-    //             for (var i = 0; i < el.length; i++) {
-    //                 let attr = el[i].getAttribute("index")
-    //                 if (attr === _id) {
-    //                     el[i].classList.remove("active");
-    //                 }
-    //             }
-    //         } catch (error) {
-    //             console.log(error);
-    //         }
-    //         console.log(_id, input)
-    //     }
-    // };
+    const handleUpdateDesc = async (e) => {
+        e.preventDefault();
+        if (!input || input === " ") {
+            setInput(e.target.value = props.desc);
+        }
+        else {
+            try {
+                setInput(desc);
+                let el = document.getElementsByClassName("to-do__description");
+                for (var i = 0; i < el.length; i++) {
+                    let attr = el[i].getAttribute("index")
+                    if (attr === _id) {
+                        el[i].classList.remove("active");
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+            }
+            dispatch(updateDesc({_id, input}))
+            console.log(_id, input)
+        }
+    };
 
     let classDone, classCheck, classActive, classBtn;
 
@@ -137,53 +137,55 @@ function TaskItem(props) {
     }
 
     const onCalendarChange = (e) => {
-        console.log(e)
+        // console.log(e)
         setdateChange(e._d)
-        dispatch(updateDate(_id, e._d))
+        dispatch(updateDate({time: e._d, id: _id}))
     }
 
     // //////////////////////////////////////////////////
 
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    // const [open, setOpen] = useState(false);
+    // const handleOpen = () => setOpen(true);
+    // const handleClose = () => setOpen(false);
 
-    const style = {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 400,
-        bgcolor: 'background.paper',
-        border: '2px solid #000',
-        boxShadow: 24,
-        p: 4,
-        borderRadius: '15px',
-    };
+    // const style = {
+    //     position: 'absolute',
+    //     top: '50%',
+    //     left: '50%',
+    //     transform: 'translate(-50%, -50%)',
+    //     width: 400,
+    //     bgcolor: 'background.paper',
+    //     border: '2px solid #000',
+    //     boxShadow: 24,
+    //     p: 4,
+    //     borderRadius: '15px',
+    // };
 
-    const updateDescript = (e) => {
-        e.preventDefault();
-        if (!input || input === " ") {
-            setInput(e.target.value = props.desc);
-        }
-        else {
-            try {
-                dispatch(updateDesc(_id, input))
-                setBtn(!btn)
-                setInput("")
-            } catch (error) {
-                console.log(error);
-            }
-            console.log(_id, input)
-        }
-    }
+    ////// ui попап /////////
+    // const updateDescript = (e) => {
+    //     e.preventDefault();
+    //     if (!input || input === " ") {
+    //         setInput(e.target.value = props.desc);
+    //     }
+    //     else {
+    //         try {
+    //             dispatch(updateDesc({_id, input}))
+    //             setBtn(!btn)
+    //             setInput("")
+    //         } catch (error) {
+    //             console.log(error);
+    //         }
+    //         console.log(_id, input)
+    //     }
+    // }
 
-    const handleKeyDesck = (e) => {
-        if (e.keyCode === 13) {
-            updateDescript(e)
-            setMode(false)
-        }
-    }
+    // const handleKeyDesck = (e) => {
+    //     if (e.keyCode === 13) {
+    //         updateDescript(e)
+    //         setMode(false)
+    //     }
+    // }
+    ////// ui попап /////////
 
     return (
         <li className="to-do__list-li">
@@ -204,7 +206,7 @@ function TaskItem(props) {
             <input
                 id="checkItem"
                 className="to-do__checkbox-input"
-                // onClick={handleCheck}
+                onClick={handleCheck}
                 type="checkbox"
             />
             <img
@@ -213,17 +215,17 @@ function TaskItem(props) {
                 alt="check"
             />
             <div className="to-do__wrapp-div">
-                {true ?
+                {mode ?
                     <>
                         <input
                             type="text"
-                            // autoFocus
+                            autoFocus
                             className={classDone}
-                            // onBlur={onBlur}
-                            // onFocus={onFocus}
-                            // onKeyDown={handleKeyDown}
-                            // onDoubleClick={removeAttribute}
-                            // onChange={handleInput}
+                            onBlur={onBlur}
+                            onFocus={onFocus}
+                            onKeyDown={handleKeyDown}
+                            onDoubleClick={removeAttribute}
+                            onChange={handleInput}
                             defaultValue={text}
                             id={_id}
                         />
@@ -232,41 +234,52 @@ function TaskItem(props) {
                     <>
                         <div
                             type="text"
-                            // disabled
+                            disabled
                             className={classDone}
-                            // onDoubleClick={modeUpdateTrue}
+                            onDoubleClick={modeUpdateTrue}
                             id={_id}
                         >
                             {text}
                         </div>
 
-                        <Modal
+                        {/* <Modal
                             open={open}
-                            onClose={handleClose}
+                            // onClose={handleClose}
                             aria-labelledby="modal-modal-title"
                             aria-describedby="modal-modal-description"
                             index={_id}
                         >
                             <Box sx={style}>
-                                <TextField onChange={handleInput} onKeyDown={handleKeyDesck} label={desc} value={input} id="margin-normal" margin="normal" />
+                                <TextField 
+                                // onChange={handleInput}
+                                // onKeyDown={handleKeyDesck} 
+                                label={desc} value={input} id="margin-normal" margin="normal" />
                                 <div className='to-do__btn-add-desc'>
-                                    <Button className='to-do__btn-add' onClick={updateDescript}>save</Button>
+                                    <Button className='to-do__btn-add' 
+                                    // onClick={updateDescript}
+                                    >save
+                                    </Button>
                                 </div>
                             </Box>
                         </Modal>
 
 
-                        <Button className="to-do__menu-add" onClick={handleOpen}>
+                        <Button 
+                        className="to-do__menu-add" 
+                        // onClick={handleOpen}
+                        >
                             <img className="to-do__menu-img" src="/img/pencil.svg" alt="add" />
-                        </Button>
+                        </Button> */}
 
                         {/* ////////////////////////////// */}
 
-                        {/* <div className={classBtn}>
+                        <div className={classBtn}>
                             <div className="to-do__desc-wrap">
-                                    <button className="to-do__btn-exit" onClick={addPopap}>
-                                        <img className="to-do__checkbox-cross" src="/img/cross.svg" alt="delete" />
-                                    </button>
+                                <button className="to-do__btn-exit"
+                                onClick={addPopap}
+                                >
+                                    <img className="to-do__checkbox-cross" src="/img/cross.svg" alt="delete" />
+                                </button>
                                 <label className="to-do__label">
                                     <textarea
                                         className="to-do__description"
@@ -278,22 +291,29 @@ function TaskItem(props) {
                                         index={_id}
                                     />
                                 </label>
-                                    <button className="to-do__btn-send" onClick={handleUpdateDesc}>отправить</button>
+                                <button className="to-do__btn-send"
+                                    onClick={handleUpdateDesc}
+                                >
+                                    отправить
+                                </button>
                                 <div className="to-do__btn-wrap">
                                 </div>
                             </div>
-                        </div>       
-                        <button className="to-do__menu-add" onClick={addPopap}>
-                            <img className="to-do__menu-img" src="/img/pencil.svg" alt="add"/>
-                        </button> */}
-
-                        <button className="to-do__checkbox-btn" 
-                        // onClick={handleDelete}
+                        </div>
+                        <button className="to-do__menu-add"
+                         onClick={addPopap}
                         >
-                            <img className="to-do__checkbox-cross" src="/img/cross.svg" alt="delete" />
+                            <img className="to-do__menu-img" src="/img/pencil.svg" alt="add" />
                         </button>
+
+
                     </>}
             </div>
+            <button className="to-do__checkbox-btn"
+                onClick={handleDelete}
+            >
+                <img className="to-do__checkbox-cross" src="/img/cross.svg" alt="delete" />
+            </button>
         </li>
     )
 }

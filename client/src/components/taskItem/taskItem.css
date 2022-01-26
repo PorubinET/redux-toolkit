@@ -53,7 +53,7 @@
         background: transparent;
         position: relative;
         top: 22px;
-        width: 80%;
+        width: 70%;
         font-size: 20px;
         color: #000;
         font-family: 'Roboto';
@@ -93,15 +93,16 @@
         position: absolute;
         right: 2px;
         top: 2px;
-        opacity: 0;
-        transition: all .3s;
-    }
-    .to-do__list-li:hover .to-do__checkbox-btn{
         opacity: 1;
+        transition: all .3s;
+        z-index: 1000;
     }
-    .xuita{
+    /* .to-do__list-li:hover .to-do__checkbox-btn{
+        opacity: 1;
+    } */
+    /* .xuita{
         opacity: 0;
-    }
+    } */
     .to-do__list-li .MuiInput-input{
         z-index: 0;
         cursor: pointer;

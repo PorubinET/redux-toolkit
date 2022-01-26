@@ -1,22 +1,27 @@
 import React from "react";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { taskLoad } from "../src/store/todoSlice"
 import TaskInput from "./components/taskInput/taskInput";
+
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
-import { useDispatch } from "react-redux";
-import {inputLoad} from './store/todoSlice'
+
+
 
 
 
 
 import Footer from "./components/footer/footer";
-// import DateFnsUtils from '@date-io/date-fns';
-// import LuxonUtils from '@date-io/luxon';
+
 import "./App.css";
 
 
 function App() {
-
-  
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(taskLoad())
+}, [dispatch]);
 
 
   return (

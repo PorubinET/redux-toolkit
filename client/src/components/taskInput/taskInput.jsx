@@ -1,8 +1,7 @@
- import { useState, useEffect } from "react";
-// import { taskCreate, inputLoad, completedAll } from "../../redux/actions";
-// import { addTask } from "../../services/taskServices";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { taskLoad } from "../../store/todoSlice"
+import { createTask, completedAll } from "../../store/todoSlice"
+import { addTask } from "../../services/taskServices";
 import TaskItem from "../taskItem/taskItem"
 
 import './taskinput.css'
@@ -10,68 +9,54 @@ import './taskinput.css'
 
 
 function TaskInput() {
-    // const addTask = () => dispatch(inputLoad())
-    const todos = useSelector((state) => state.todos.todos) 
-    const dispatch = useDispatch()
-    console.log(todos)
-    useEffect(()=>{dispatch(taskLoad())},[]);
     const [text, setText] = useState('');
+    const dispatch = useDispatch()
+    const filter = useSelector(state => state.todos.filter)
 
-    // const dispatch = useDispatch(),
-    // const filter = useSelector(state => {
-    //     const { itemsReducer } = state;
-    //     return itemsReducer.filter;
-    // })
-
-
-    // const tasks = useSelector(state => {
-    //     const { itemsReducer } = state;
-    //     if (filter === "compleated") {
-    //         return itemsReducer.tasks.filter((items) => items.done);
-    //     }
-    //     else if (filter === "active") {
-    //         return itemsReducer.tasks.filter(items => !items.done);
-    //     }
-    //     else {
-    //         return itemsReducer.tasks
-    //     }
-    // })
+    const todos = useSelector(state => {
+        if (filter === "compleated") {
+            return state.todos.todos.filter((items) => items.done);
+        }
+        else if (filter === "active") {
+            return state.todos.todos.filter(items => !items.done);
+        }
+        else {
+            return state.todos.todos
+        }
+    })
 
     // ввод текста
-    // const handleChange = (e) => { setText(e.target.value = e.target.value.replace(/ +/g, ' ')) }
+    const handleChange = (e) => { setText(e.target.value = e.target.value.replace(/ +/g, ' ')) }
+
 
     // добавление таски
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     if (text === "" || text === " ") {
-    //         alert('Заполните поле')
-    //     }
-    //     else {
-    //         try {
-    //             const { data } = await addTask({ text: text.trim()});
-    //             console.log(data)
-    //             dispatch(taskCreate(data))
-    //         } catch (error) {
-    //             console.log(error);
-    //         }
-    //     }
-    //     setText(e.target.value = "")
-    // };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (text === "" || text === " ") {
+            alert('Заполните поле')
+        }
+        else {
+            try {
+                const { data } = await addTask({text: text.trim()});
+                console.log(data)
+                dispatch(createTask(data))
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        setText(e.target.value = "")
+    };
 
-    // const allCompleated = async (e) => {
-    //     e.preventDefault();
-    //     dispatch(completedAll(tasks.every(items => items.done)))
-    // }
+    const allCompleated = async (e) => {
+        e.preventDefault();
+        dispatch(completedAll(todos.every(todo => todo.done)))
+    }
 
-    // рендер
-    // useEffect(() => {
-    //     dispatch(inputLoad())
-    // }, [dispatch]);
 
-    
     // взаимодействие с css 
     let classArrow, classCheck;
-    if (true) {
+
+    if (todos.length) {
         classArrow = "to-do__list-btn-arrow to-do__list-btn-arrow-active";
         classCheck = "to-do__list-btn to-do__list-btn-active";
     } else {
@@ -79,17 +64,17 @@ function TaskInput() {
         classCheck = "to-do__list-btn";
     }
 
-    // if (tasks.every(item => item.done)) { classArrow += " to-do__fading" }
+    if (todos.every(item => item.done)) { classArrow += " to-do__fading" }
 
     return (
         <div className="App flex">
             <form
                 className="add"
-                // onSubmit={handleSubmit}
+            onSubmit={handleSubmit}
             >
                 <input
                     className={classCheck}
-                    // onClick={allCompleated}
+                    onClick={allCompleated}
                     type="checkbox">
                 </input>
                 <img
@@ -102,7 +87,7 @@ function TaskInput() {
                     type="text"
                     required={true}
                     value={text}
-                    // onChange={handleChange}
+                    onChange={handleChange}
                     placeholder="What needs to be done?">
                 </input>
             </form>
