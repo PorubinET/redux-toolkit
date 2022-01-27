@@ -1,11 +1,11 @@
 import { useState } from "react";
 import DateMomentUtils from '@date-io/moment';
-import { useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 
 import { DateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 // import { Popover, TextField, Modal, Box, Typography, Button } from "@material-ui/core";
 
-import { inputDelete, updateText, updateChecker, updateDate, updateDesc} from "../../store/todoSlice"
+import { inputDelete, updateText, updateChecker, updateDate, updateDesc } from "../../store/todoSlice"
 
 import './taskItem.css';
 
@@ -36,7 +36,7 @@ function TaskItem(props) {
     const handleCheck = (e) => {
         e.preventDefault();
         try {
-            dispatch(updateChecker({_id, done}));
+            dispatch(updateChecker({ _id, done }));
         } catch (error) {
             console.log(error);
         }
@@ -87,12 +87,11 @@ function TaskItem(props) {
             } catch (error) {
                 console.log(error);
             }
-            dispatch(updateText({input, _id, done}))
+            dispatch(updateText({ input, _id, done }))
         }
     };
 
     //Description//
-
 
     const handleUpdateDesc = async (e) => {
         e.preventDefault();
@@ -112,7 +111,7 @@ function TaskItem(props) {
             } catch (error) {
                 console.log(error);
             }
-            dispatch(updateDesc({_id, input}))
+            dispatch(updateDesc({ _id, input }))
             console.log(_id, input)
         }
     };
@@ -137,7 +136,7 @@ function TaskItem(props) {
 
     const onCalendarChange = (e) => {
         setdateChange(e._d)
-        dispatch(updateDate({time: e._d, id: _id}))
+        dispatch(updateDate({ time: e._d, _id: _id }))
     }
 
     // //////////////////////////////////////////////////
@@ -274,7 +273,7 @@ function TaskItem(props) {
                         <div className={classBtn}>
                             <div className="to-do__desc-wrap">
                                 <button className="to-do__btn-exit"
-                                onClick={addPopap}
+                                    onClick={addPopap}
                                 >
                                     <img className="to-do__checkbox-cross" src="/img/cross.svg" alt="delete" />
                                 </button>
@@ -299,19 +298,19 @@ function TaskItem(props) {
                             </div>
                         </div>
                         <button className="to-do__menu-add"
-                         onClick={addPopap}
+                            onClick={addPopap}
                         >
                             <img className="to-do__menu-img" src="/img/pencil.svg" alt="add" />
+                        </button>
+                        <button className="to-do__checkbox-btn"
+                            onClick={handleDelete}
+                        >
+                            <img className="to-do__checkbox-cross" src="/img/cross.svg" alt="delete" />
                         </button>
 
 
                     </>}
             </div>
-            <button className="to-do__checkbox-btn"
-                onClick={handleDelete}
-            >
-                <img className="to-do__checkbox-cross" src="/img/cross.svg" alt="delete" />
-            </button>
         </li>
     )
 }

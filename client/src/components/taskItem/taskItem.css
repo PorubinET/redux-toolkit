@@ -93,13 +93,13 @@
         position: absolute;
         right: 2px;
         top: 2px;
-        opacity: 1;
+        opacity: 0;
         transition: all .3s;
         z-index: 1000;
     }
-    /* .to-do__list-li:hover .to-do__checkbox-btn{
+    .to-do__list-li:hover .to-do__checkbox-btn{
         opacity: 1;
-    } */
+    }
     /* .xuita{
         opacity: 0;
     } */

@@ -10,20 +10,20 @@ export function addTask(text) {
 }
 
 export function updateTask(id, body) {
-    console.log(id, body, "sevices")
     return axios.put(apiUrl + "/" + id, body);
 }
 
 export function updateCheck(id, done) {  
-    return axios.put(apiUrl + "/" + id, {done: done});
+    return axios.put(apiUrl + "/" + id, done);
 }
 
 export function updateTasks(done) {
     return axios.put(apiUrl, done);
 }
 
-export function deleteTaskAll() {
-    return axios.delete(apiUrl);
+export function deleteTaskAll(done) {
+    return axios.delete(apiUrl, { done });
+
 }
 
 export function deleteTask(id) {

@@ -38,7 +38,6 @@ function TaskInput() {
         else {
             try {
                 const { data } = await addTask({text: text.trim()});
-                console.log(data)
                 dispatch(createTask(data))
             } catch (error) {
                 console.log(error);
@@ -51,7 +50,6 @@ function TaskInput() {
         e.preventDefault();
         dispatch(completedAll(todos.every(todo => todo.done)))
     }
-
 
     // взаимодействие с css 
     let classArrow, classCheck;

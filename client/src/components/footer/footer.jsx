@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
-// import { taskDeleteAll, filterUpdate } from "../../redux/actions"
-import { deleteAll, updateFilter } from "../../store/todoSlice"
+import { 
+    deleteAll, 
+    updateFilter } from "../../store/todoSlice"
 
 import './footer.css'
 
@@ -58,7 +59,7 @@ function Footer() {
     const deleteAllTasks = (e) => {
         e.preventDefault();
         try {
-            dispatch(deleteAll())
+            dispatch(deleteAll(true))
         } catch (error) {
             console.log(error)
         }

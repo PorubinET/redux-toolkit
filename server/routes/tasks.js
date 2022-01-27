@@ -22,7 +22,7 @@ router.get("/", async (req, res) => {
 });
 
 router.put("/:id", async (req, res) => {
-    console.log(req.params.id, req.body, "routes")
+    // console.log(req.params.id, req.body, "routes")
     try {
         const task = await Task.findOneAndUpdate({ _id: req.params.id },req.body);
         res.send(task);
